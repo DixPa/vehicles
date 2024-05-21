@@ -38,29 +38,27 @@ st.subheader('Datos de vehiculos no tratados (10 primeros datos)')
 st.write(car_data_no_process.head(10))
 
 st.write('Para el tratamiento de datos, se ha decidido rellenar los valores ausentes con el número 99, dependiendo de la columna correspondiente. Por ejemplo, para el año del vehículo, que normalmente consiste en cuatro dígitos (por ejemplo, 2018), si este valor está ausente, se rellenará con 9999. Este proceso se aplicará de manera similar a las siguientes columnas. Además, se verificarán los valores ausentes en todo el conjunto de datos. En caso de que se encuentren valores ausentes, se eliminarán al presionar el botón de "Tratar los datos" junto con el relleno de datos ausentes, para garantizar la integridad del análisis.')
+car_data_clean = data_cleaning(car_data_no_process)
+st.subheader('Datos de vehiculos tratados (10 primeros datos)')
+
 if st.button('Tratar datos'):
-    car_data_clean = data_cleaning(car_data_no_process)
-    st.subheader('Datos de vehiculos tratados (10 primeros datos)')
     st.write(car_data_clean.head(10))
 
-    st.subheader('Opciones de Gráfico')
-    tipo_grafico = st.selectbox('Selecciona el tipo de gráfico', 
-                                    ['Histograma', 'Gráfico de Barras', 'Gráfico de Dispersión'])
+st.subheader('Opciones de Gráfico')
+tipo_grafico = st.selectbox('Selecciona el tipo de gráfico', 
+                            ['Histograma', 'Gráfico de Barras', 'Gráfico de Dispersión'])
+if tipo_grafico == 'Histograma':
+    columna = st.selectbox('Selecciona la columna para el histograma',['price', 'model_year', 'days_listed', 'cylinders'])
+    fig = histogram(car_data_clean, columna)
+    st.plotly_chart(fig)
 
-    if tipo_grafico == 'Histograma':
-        columna = st.selectbox('Selecciona la columna para el histograma',['price', 'model_year', 'days_listed', 'cylinders'])
-        fig = histogram(car_data_clean, columna)
-        st.plotly_chart(fig)
-    
-    elif tipo_grafico == 'Gráfico de Barras':
-        columna = st.selectbox('Selecciona la columna para el gráfico de barras',  ['condition', 'fuel', 'transmission', 'type'])
-        fig = bar(car_data_clean, columna)
-        st.plotly_chart(fig)
-    
-    elif tipo_grafico == 'Gráfico de Dispersión':
-        x_columna = st.selectbox('Selecciona la columna para el eje X',['price', 'model_year', 'days_listed', 'cylinders'])
-        y_columna = st.selectbox('Selecciona la columna para el eje Y',['price', 'model_year', 'days_listed', 'cylinders'])
-        fig = dispersion(car_data_clean, x_columna, y_columna)
-        st.plotly_chart(fig)
+elif tipo_grafico == 'Gráfico de Barras':
+    columna = st.selectbox('Selecciona la columna para el gráfico de barras',  ['condition', 'fuel', 'transmission', 'type'])
+    fig = bar(car_data_clean, columna)
+    st.plotly_chart(fig)
 
-
+elif tipo_grafico == 'Gráfico de Dispersión':
+    x_columna = st.selectbox('Selecciona la columna para el eje X',['price', 'model_year', 'days_listed', 'cylinders'])
+    y_columna = st.selectbox('Selecciona la columna para el eje Y',['price', 'model_year', 'days_listed', 'cylinders'])
+    fig = dispersion(car_data_clean, x_columna, y_columna)
+    st.plotly_chart(fig)
